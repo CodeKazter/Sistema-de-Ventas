@@ -1,11 +1,14 @@
 import time
 print("::: BIENVENIDO A LIBRERIA EVA'S POS :::")
 Usuarios={"master":1234, "gerente":5678}
-Clientes={"Efectivo":0000000}
+Clientes={"Efectivo":0000000, "Julio":31074002, "Omar":31770825, "Said":31818222}
 inventario={"libreta": {"Codigo":"ESCO01", "Precio":12, "Existencia": 200}, 
 "pint al frio solita":{"Codigo":"ESCO012", "Precio":15, "Existencia":74},
 "sacapuntas de metal":{"Codigo":"ESCO102","Precio":17, "Existencia":94},
 "lapiz unidad":{"Codigo":"ESCO110", "Precio":2.5, "Existencia":281}}
+all_facts={"Venta no contribuyente":0}
+info={"Omar Castellano":"V31770825", "Julio Suarez":"V31074002", "Said Valencia":"V31818222",
+ "Yurisber Aguilera":"V31276008", "Andres Gomez":"V31085717"}
 # Declaramos las funciones secundarias que utlizara el programa
 def nuevas_facturas():
     Productos = []
@@ -40,7 +43,7 @@ def nuevas_facturas():
                     print("\t Libreria Eva`POS")
                     print("")
                     print(f"FACTURA:\nFECHA: " + time.strftime("%x") + "\t\t HORA: " + time.strftime("%X"))
-                    print("-----------------------------------------")
+                    print(40*"-")
                     k = 0
                     total = 0
                     for i in Productos:
@@ -48,12 +51,13 @@ def nuevas_facturas():
                         "\t \t" + str(Costo_prod[k]))
                         total += Costo_prod[k]
                         k += 1
-                    print("-----------------------------------------")
+                    print(40*"-")
                     print(f"EXENTO (E) \t\t{total}")
                     print(f"Iva (16,00%)\t\t{iva*total}")
-                    print("-----------------------------------------")
+                    print(40*"-")
                     print(f"TOTAL \t\t \t\tBs{total+(iva*total)}")
                     salir = input("Presione cualquier tecla para salir: ")
+                    all_facts[cliente] = total*iva
                     if salir != "$%&/(&)=gst":
                         return nuevas_facturas()
 
@@ -68,8 +72,43 @@ def nuevas_facturas():
     elif opcion_fac == 2:
         return Menu_principal()
 
+def menu_ayuda():
+    print("\t::AYUDA::")
+    print("1.NOMBRE DEL POS")
+    print("2.DESARROLLADORES")
+    print("3.SALIR")
+    opcion_ayuda=int(input("Ingrese el número de su opcion:  "))
+    if opcion_ayuda == 1:
+        print("\t:::=EVA's POS=:::")
+        salir=input("Escriba la palabra 'SALIR' para volver al menú principal: ")
+        if salir == 'salir':
+            return Menu_principal()
+    if opcion_ayuda ==2:
+        print(info)
+        salir=input("Escriba la palabra 'SALIR' para volver al menú principal: ")
+        if salir == 'salir':
+            return Menu_principal()
+    if opcion_ayuda == 3:
+        return Menu_principal()
+
 def reporte_ventas():
-    print('ns')
+    print("\t :: REPORTES Z ::")
+    print("1. Ver reporte de ventas")
+    print("2. SALIR")
+    opcion_rv=int(input("Ingrese el numero de su opción:  "))
+    if opcion_rv == 1:
+        totaldeGanancias = 0
+        print("Par Cliente - Total de compra")
+        print(all_facts)
+        ganancia = 0 
+        for i in all_facts.values():
+            ganancia += i 
+        print(f"Reporte de Ganancias: {ganancia}")
+        salir=input("Escriba la palabra 'SALIR' para salir del submenu:  ")
+        if salir == 'salir':
+            return Menu_principal()
+    elif opcion_rv==2:
+        return Menu_principal()
 
 def Menu_productos():
     global inventario
@@ -102,7 +141,7 @@ def Menu_productos():
         for key in inventario:
             contador+=1
             print(f"{contador}. {key}")
-            opcion_elim_prod = input("Ingrese el nombre o el codigo del producto a eliminar")
+        opcion_elim_prod = input("Ingrese el nombre o el codigo del producto a eliminar: ")    
         
         if opcion_elim_prod in inventario:
             inventario.pop(opcion_elim_prod)
@@ -337,6 +376,16 @@ def Menu_principal():
             return nuevas_facturas()
         elif opcion_movimientos == 2:
             return reporte_ventas()
+
+    elif opcion == 3:
+        return menu_ayuda()
+
+    elif opcion == 4:
+        print("Gracias por utilizar este sistema! Hasta pronto...")
+
+    else:
+        print("Opcion no contemplada entre las posibilidades...")
+        return Menu_principal()
 
 
 # Se declara un ciclo indefinido hasta que el usuario ingrese un usuario y clave validos
