@@ -1,8 +1,128 @@
-
+import time
 print("::: BIENVENIDO A LIBRERIA EVA'S POS :::")
 Usuarios={"master":1234, "gerente":5678}
-
+Clientes={"Efectivo":0000000}
+inventario={"libreta": {"Codigo":"ESCO01", "Precio":12, "Existencia": 200}, 
+"pint al frio solita":{"Codigo":"ESCO012", "Precio":15, "Existencia":74},
+"sacapuntas de metal":{"Codigo":"ESCO102","Precio":17, "Existencia":94},
+"lapiz unidad":{"Codigo":"ESCO110", "Precio":2.5, "Existencia":281}}
 # Declaramos las funciones secundarias que utlizara el programa
+def nuevas_facturas():
+    Productos = []
+    Costo_prod = []
+    CantidaddeProductos = []
+    print("\t :: FACTURA ::")
+    print("1. REALIZAR NUEVA FACTURA")
+    print("2. SALIR")
+    opcion_fac=int(input("INGRESE EL NUMERO DE SU OPCION: "))
+    if opcion_fac == 1:
+        print("\t::FACTURA::")
+        cliente=(input("Cliente: "))
+        if cliente in Clientes:
+            print("Ingresa `S` para imprimir y guardar la factura")
+            while True:
+                producto=(input("Ingrese el nombre del producto-: "))
+                if producto in inventario:
+                    cantidad=int(input("Cantidad: "))
+                    inventario[producto]["Existencia"] -= cantidad 
+                    precio_prod = inventario[producto]["Precio"] * cantidad
+                    Productos.append(producto)
+                    precio_prod = inventario[producto]["Precio"] * cantidad
+                    Costo_prod.append(precio_prod)
+                    CantidaddeProductos.append(cantidad)
+
+                    if cantidad<=0 or inventario[producto]["Existencia"] < cantidad:
+                        print("ERROR")
+                        return nuevas_facturas()
+
+                elif producto == "S":
+                    print("\t      SENIAT")
+                    print("\t Libreria Eva`POS")
+                    print("")
+                    print(f"FACTURA:\nFECHA: " + time.strftime("%x") + "\t\t HORA: " + time.strftime("%X"))
+                    print("-----------------------------------------")
+                    k = 0
+                    total = 0
+                    for i in Productos:
+                        print(str(CantidaddeProductos[k]) + "x Bs" + str(inventario[i]["Precio"]) + "\n" + i + 
+                        "\t \t" + str(Costo_prod[k]))
+                        total += Costo_prod[k]
+                        k += 1
+                    print("-----------------------------------------")
+                    print(f"EXENTO (E) \t\t{total}")
+                    print(f"Iva (16,00%)\t\t{iva*total}")
+                    print("-----------------------------------------")
+                    print(f"TOTAL \t\t \t\tBs{total+(iva*total)}")
+                    salir = input("Presione cualquier tecla para salir: ")
+                    if salir != "$%&/(&)=gst":
+                        return nuevas_facturas()
+
+                else:   
+                    print("Producto no registrado")
+
+    
+
+        else:
+            print("Cliente no registrado")
+            return Menu_clientes()
+    elif opcion_fac == 2:
+        return Menu_principal()
+
+def reporte_ventas():
+    print('ns')
+
+def Menu_productos():
+    global inventario
+    print("\t :: PRODUCTOS ::")
+    print("1. ::: Agregar producto :::")
+    print("2. ::: Eliminar de producto :::")
+    print("3. ::: Inventario :::")
+    print("4. ::: SALIR :::")
+    opcion_productos=int(input("Ingrese el número de su opción: "))
+    if opcion_productos==1:
+        print("\t::AGREGAR PRODUCTO::")
+        agg_prod=input("Ingrese el nombre del producto: ")
+        agg_prod.lower()
+        if agg_prod in inventario:
+            print("Producto ya en el inventario")
+            return Menu_productos()
+
+        else: 
+            inventario[agg_prod] = {}
+            inventario[agg_prod]["Codigo"] = input("Ingresa el codigo del producto: ")
+            inventario[agg_prod]["Precio"] = float(input("Ingresa el precio del producto: "))
+            inventario[agg_prod]["Existencia"] = int(input("Ingresa la existencia del producto en inventario: "))
+            print("PRODUCTO AGREGADO EXITOSAMENTE")
+            return Menu_productos()
+ 
+
+    elif opcion_productos==2:
+        contador=0
+        print("\t::ELIMINAR PRODUCTO::")
+        for key in inventario:
+            contador+=1
+            print(f"{contador}. {key}")
+            opcion_elim_prod = input("Ingrese el nombre o el codigo del producto a eliminar")
+        
+        if opcion_elim_prod in inventario:
+            inventario.pop(opcion_elim_prod)
+            print("\tPRODUCTO ELIMINADO")
+            return Menu_productos()
+        else:
+            print("\tPRODUCTO NO REGISTRADO")
+            return Menu_productos
+    elif opcion_productos == 3:
+        print("\t===INVENTARIO===") 
+        print("PRODUCTO  -   CARACTERISTICAS  ")
+        for key, value in inventario.items():
+                print(f"{key}  \t{value}")
+        
+        Salir= input("Escribe salir para retroceder: ")
+        if Salir == "salir":
+            return Menu_productos()
+    elif opcion_productos == 4:
+        return Menu_principal()
+
 def Menu_Usuarios(): 
 
     print("\t :: MENU DE USUARIOS ::")
@@ -129,10 +249,45 @@ def Menu_clientes():
     print("\t :: GESTION DE CLIENTES ::")
     print("1. :: Agregar Clientes ::")
     print("2. :: Eliminar Clientes ::")
-    print("3. :: Reporte de Ventas ::")
-    print("4. :: Modificacion de Clientes ::")
-    print("5. :: Salir ::") 
-    opcion_clientes = input("Ingrese el numero de opcion: ")
+    print("3. :: Reporte de clientes ::")
+    print("4. :: SALIR ::")
+    
+    opcion_clientes =int(input("Ingrese el numero de opcion: "))
+    if opcion_clientes == 1:
+        print("\t:: Agregar Nuevo cliente ::")
+        agg_cl=(input("INGRESE EL NOMBRE DEL NUEVO CLIENTE: ")) 
+        agg_ci =(input("INGRESE LA CEDULA DEL NUEVO CLIENTE: ")) 
+        Clientes[agg_cl]= agg_ci
+        print("CLIENTE AGREGADO EXITOSAMENTE")
+        return Menu_clientes()
+    
+    elif opcion_clientes == 2:
+        contador = 0
+        print("\t:: Eliminacion de clientes ::")
+        for key in Clientes:
+            contador += 1
+            print(f"{contador}. {key}")
+        opcion_elim = input("Ingrese el nombre del cliente que desea eliminar: ")
+            
+        if opcion_elim in Clientes:
+            Clientes.pop(opcion_elim)
+            print("Cliente eliminado!")
+            return Menu_clientes()
+        else:
+            print("Ese Cliente no esta registrado...")
+            return Menu_clientes()
+    
+    elif opcion_clientes== 3:
+        print("\t:: Reporte de Clientes ::")
+        print("Nombre - C.I / RIF")
+        for key, value in Clientes.items():
+                print(f"{key}  \t{value}")
+        Salir= input("Escribe salir para retroceder: ")
+        if Salir == "salir":
+            return Menu_clientes()
+    
+    elif opcion_clientes == 4:
+        return Menu_principal()
 
 # Luego completamos con una funcion principal que sea capaz de llamar a las demas
 def Menu_principal():
@@ -160,6 +315,9 @@ def Menu_principal():
         elif opcion_archivo == 2:
             return Menu_clientes()
 
+        elif opcion_archivo == 3:
+            return Menu_productos()
+
         elif opcion_archivo == 4:
             return CambiodeUsuario()
 
@@ -169,19 +327,26 @@ def Menu_principal():
         elif opcion_archivo == 6:
             return Menu_principal()  
 
+    elif opcion == 2:
+        print("\t :: MOVIMIENTOS ::")
+        print("1. ::: Nueva factura :::")
+        print("2. ::: Reporte de ventas :::")
+        print("3. ::: SALIR :::")    
+        opcion_movimientos=int(input("Ingrese el número de su opción: "))
+        if opcion_movimientos == 1:
+            return nuevas_facturas()
+        elif opcion_movimientos == 2:
+            return reporte_ventas()
+
+
 # Se declara un ciclo indefinido hasta que el usuario ingrese un usuario y clave validos
 while True:
     usuario_=input("Ingrese su nombre de usuario:")
     clave_=int(input("Ingrese su clave numerica:"))
+    iva =16/100
     if usuario_ in Usuarios and clave_ == Usuarios[usuario_]:
         Menu_principal()
         break
     else:
         print("Usuario y/o contaseña incorrectos ¡Inténtelo de nuevo!...")
-
-
-
-
-
-
         
